@@ -13,8 +13,9 @@ class TestCreateOrder:
                         'тело ответа содержит track.')
     @pytest.mark.parametrize('colors', OrderData.colors)
     def test_create_order(self, colors):
-        OrderData.order_data['colors'] = [colors]
-        payload = OrderData.order_data
+        order_data = OrderData()
+        order_data.colors = [colors]
+        payload = order_data.order_data
         response = requests.post(f'{url}/api/v1/orders', data=payload)
         assert response.status_code == 201
         assert 'track' in response.json()

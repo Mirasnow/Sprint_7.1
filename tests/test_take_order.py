@@ -1,6 +1,8 @@
 import allure
 import requests
 from data import url
+from data import ErrorsMessages as EM
+
 
 class TestTakeOrder:
 
@@ -30,7 +32,7 @@ class TestTakeOrder:
         order_id = response_order.json()['orders'][0]['id']
         response_take_order = requests.put(f'{url}/api/v1/orders/accept/{order_id}')
         assert response_take_order.status_code == 400
-        assert response_take_order.json()['message'] == 'Недостаточно данных для поиска'
+        assert response_take_order.json()['message'] == EM.accept_order_error_400
 
     @allure.title('Проверка, что заказ нельзя принять, если передан неверный id курьера')
     @allure.description('Негативный сценарий тестирования ручки "Принять заказ" PUT /api/v1/orders/accept/:id.'
@@ -41,7 +43,7 @@ class TestTakeOrder:
         order_id = response_order.json()['orders'][0]['id']
         response_take_order = requests.put(f'{url}/api/v1/orders/accept/{order_id}', params=payload_courier_id)
         assert response_take_order.status_code == 404
-        assert response_take_order.json()['message'] == 'Курьера с таким id не существует'
+        assert response_take_order.json()['message'] == EM.accept_order_courier_id_error_404
 
     @allure.title('Проверка, что заказ нельзя принять, если не передан id заказа')
     @allure.description('Негативный сценарий тестирования ручки "Принять заказ" PUT /api/v1/orders/accept/:id.'
@@ -49,7 +51,7 @@ class TestTakeOrder:
     def test_take_order_no_orderid(self):
         response_take_order = requests.put(f'{url}/api/v1/orders/accept/:id')
         assert response_take_order.status_code == 400
-        assert response_take_order.json()['message'] == 'Недостаточно данных для поиска'
+        assert response_take_order.json()['message'] == EM.accept_order_error_400
 
     @allure.title('Проверка, что заказ нельзя принять, если передан неверный id заказа')
     @allure.description('Негативный сценарий тестирования ручки "Принять заказ" PUT /api/v1/orders/accept/:id.'
@@ -66,4 +68,4 @@ class TestTakeOrder:
         order_id = 0
         response_take_order = requests.put(f'{url}/api/v1/orders/accept/{order_id}', params=payload_courier_id)
         assert response_take_order.status_code == 404
-        assert response_take_order.json()['message'] == 'Заказа с таким id не существует'
+        assert response_take_order.json()['message'] == EM.accept_order_order_id_error_404

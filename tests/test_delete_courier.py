@@ -1,6 +1,7 @@
 import allure
 import requests
 from data import url
+from data import ErrorsMessages as EM
 
 
 class TestDeleteCourier:
@@ -28,8 +29,4 @@ class TestDeleteCourier:
     def test_delete_courier_no_exist_id(self):
         response_delete = requests.delete(f'{url}/api/v1/courier/0')
         assert response_delete.status_code == 404
-        assert response_delete.json()['message'] == 'Курьера с таким id нет.'
-
-
-
-
+        assert response_delete.json()['message'] == EM.delete_courier_error_404

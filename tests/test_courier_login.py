@@ -2,6 +2,8 @@ import allure
 import requests
 import pytest
 from data import url
+from data import ErrorsMessages as EM
+
 
 class TestCourierLogin:
 
@@ -31,8 +33,7 @@ class TestCourierLogin:
         payload[invalid_data] += 'meow'
         response = requests.post(f'{url}/api/v1/courier/login', data=payload)
         assert response.status_code == 404
-        assert response.json()['message'] == 'Учетная запись не найдена'
-
+        assert response.json()['message'] == EM.courier_login_error_404
 
     # у теста логина без пароля статус код 504 - это баг апи, обсуждали с наставником в пачке
     # сказали оставить так и написать коммент о баге апи
@@ -50,4 +51,4 @@ class TestCourierLogin:
         payload = {key: value for key, value in payload.items() if key != no_data}
         response = requests.post(f'{url}/api/v1/courier/login', data=payload)
         assert response.status_code == 400
-        assert response.json()['message'] == 'Недостаточно данных для входа'
+        assert response.json()['message'] == EM.courier_login_error_400
